@@ -1,11 +1,13 @@
 package main
 
 import (
-	customarrays "practice-1/customArrays"
+	"practice-1/slices2d"
 )
 
 func main() {
 
-	customarrays.PrintSlice(5, "0", "1")
+	arr := slices2d.CreateSlice(5, "0")
+	filledArray := slices2d.FillDiagonals(arr, "1")
+	slices2d.PrintSlice(filledArray)
 
 }

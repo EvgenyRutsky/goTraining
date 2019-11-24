@@ -1,37 +1,46 @@
 package bot
 
 import (
+	"errors"
 	"fmt"
 )
 
 //Bot interface
 type Bot interface {
-	createBot()
-	sayHello()
-	sayDate()
-	sayTime()
-	sayWeekDay()
-	sayBye()
+	SayHello()
+	SayDate()
+	SayTime()
+	SayWeekDay()
+	SayBye()
 }
 
-//CreateBot creates new bot depending on the language
-func CreateBot() {
+func ScanLanguage() string{
 	var language string
-	fmt.Print("Language: English/Russian")
+	fmt.Println("Language: English/Russian")
 	_, err := fmt.Scanln(&language)
 
 	if err != nil {
 		fmt.Printf("You've just ran into error %v\n", err)
 	}
+	return language
+}
+//CreateBot creates new bot depending on the language
+func CreateBot(language string) (Bot, error) {
 
 	if language == "English" {
-		CreateEngbot()
+		var b Bot = &Engbot{
+			name: "Bob",
+		}
+		return b, nil
 	} else if language == "Russian" {
-		CreateRubot()
-	} else {
-		fmt.Println("Entered language is not valid, try again, please")
-		CreateBot()
+		var b Bot = &Rubot{
+			name: "Василий",
+		}
+		return b, nil
 	}
+
+	return nil, errors.New("incorrect language has been used")
+
 }
 
 //HandleInput serves an input from the console
@@ -46,18 +55,18 @@ func HandleInput(b Bot) {
 
 	switch input {
 	case "1":
-		b.sayHello()
+		b.SayHello()
 		HandleInput(b)
 	case "2":
-		b.sayTime()
+		b.SayTime()
 		HandleInput(b)
 	case "3":
-		b.sayDate()
+		b.SayDate()
 		HandleInput(b)
 	case "4":
-		b.sayWeekDay()
+		b.SayWeekDay()
 		HandleInput(b)
 	case "5":
-		b.sayBye()
+		b.SayBye()
 	}
 }

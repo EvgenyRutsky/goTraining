@@ -10,13 +10,6 @@ type Rubot struct {
 	name string
 }
 
-//CreateRubot creates new russian bot
-func CreateRubot() *Rubot {
-	return &Rubot{
-		name: "Василий",
-	}
-}
-
 //SayHello says hello
 func (r *Rubot) SayHello() {
 	fmt.Printf("Привет, я %v\n", r.name)
@@ -41,7 +34,7 @@ func (r *Rubot) SayDate() {
 }
 
 //SayWeekDate says weekdate
-func (r *Rubot) SayWeekDate() {
+func (r *Rubot) SayWeekDay() {
 	name := "Europe/Minsk"
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)

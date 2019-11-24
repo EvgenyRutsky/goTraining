@@ -10,13 +10,6 @@ type Engbot struct {
 	name string
 }
 
-//CreateEngbot creates new english bot
-func CreateEngbot() *Engbot {
-	return &Engbot{
-		name: "Bob",
-	}
-}
-
 //SayHello says hello
 func (e *Engbot) SayHello() {
 	fmt.Printf("Hello, I'm %v\n", e.name)
@@ -41,7 +34,7 @@ func (e *Engbot) SayDate() {
 }
 
 //SayWeekDate says weekdate
-func (e *Engbot) SayWeekDate() {
+func (e *Engbot) SayWeekDay() {
 	name := "Europe/London"
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)

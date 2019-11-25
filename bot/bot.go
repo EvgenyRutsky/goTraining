@@ -3,6 +3,7 @@ package bot
 import (
 	"errors"
 	"fmt"
+	"os"
 )
 
 //Bot interface
@@ -12,16 +13,19 @@ type Bot interface {
 	SayTime()
 	SayWeekDay()
 	SayBye()
+	PrintError()
 }
 
-func ScanLanguage() string{
+func ScanLanguage() string {
 	var language string
-	fmt.Println("Language: English/Russian")
+	fmt.Println("Please enter your language: English/Russian")
 	_, err := fmt.Scanln(&language)
 
 	if err != nil {
 		fmt.Printf("You've just ran into error %v\n", err)
+		os.Exit(1)
 	}
+
 	return language
 }
 //CreateBot creates new bot depending on the language
@@ -51,7 +55,10 @@ func HandleInput(b Bot) {
 
 	if err != nil {
 		fmt.Printf("You've just ran into error %v\n", err)
+		os.Exit(1)
 	}
+
+	//input = translateCommand(input)
 
 	switch input {
 	case "1":
@@ -68,5 +75,26 @@ func HandleInput(b Bot) {
 		HandleInput(b)
 	case "5":
 		b.SayBye()
+
+	default:
+		b.PrintError()
+		HandleInput(b)
 	}
 }
+
+//translateCommand translates language-specific command to numeric command
+//func translateCommand (input string) string {
+//	commandMap := map[string]func(){
+//		"Привет" : "1",
+//		"Время" : "2",
+//		"Дата" : "3",
+//		"День" : "4",
+//		"Пока" : "5",
+//		"Hello" : "1",
+//		"Time" : "2",
+//		"Date" : "3",
+//		"Day" : "4",
+//		"Bye" : "5",
+//	}
+//	return commandMap[input]
+//}

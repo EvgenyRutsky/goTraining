@@ -21,7 +21,7 @@ func (r *Rubot) SayTime() {
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)
 	t = t.In(loc)
-	fmt.Println("Сейчас ", t.Location(), t.Format("15:04"))
+	fmt.Println("Сейчас", t.Format("15:04"))
 }
 
 //SayDate says date
@@ -30,19 +30,24 @@ func (r *Rubot) SayDate() {
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)
 	t = t.In(loc)
-	fmt.Println("Сегодня ", t.Location(), t.Format("Jan 2 2006"))
+	fmt.Println("Сегодня", t.Format("January 2 2006"))
 }
 
-//SayWeekDate says weekdate
+//SayWeekDate says weekday
 func (r *Rubot) SayWeekDay() {
 	name := "Europe/Minsk"
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)
 	t = t.In(loc)
-	fmt.Println("Сегодня ", t.Location(), t.Format("Mon"))
+	fmt.Println("Сегодня", t.Format("Monday"))
 }
 
 //SayBye says bye
 func (r *Rubot) SayBye() {
 	fmt.Println("Пока")
+}
+
+//PrintError prints the error when command isn't recognized
+func (r *Rubot) PrintError() {
+	fmt.Println("Я не понимаю эту команду")
 }

@@ -21,7 +21,7 @@ func (e *Engbot) SayTime() {
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)
 	t = t.In(loc)
-	fmt.Println("Now is", t.Location(), t.Format("15:04"))
+	fmt.Println("Now is", t.Format("15:04"))
 }
 
 //SayDate says date
@@ -30,19 +30,24 @@ func (e *Engbot) SayDate() {
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)
 	t = t.In(loc)
-	fmt.Println("Today is", t.Location(), t.Format("Jan 2 2006"))
+	fmt.Println("Today is", t.Format("January 2 2006"))
 }
 
-//SayWeekDate says weekdate
+//SayWeekDate says weekday
 func (e *Engbot) SayWeekDay() {
 	name := "Europe/London"
 	t := time.Now()
 	loc, _ := time.LoadLocation(name)
 	t = t.In(loc)
-	fmt.Println("Today is", t.Location(), t.Format("Mon"))
+	fmt.Println("Today is", t.Format("Monday"))
 }
 
 //SayBye says bye
 func (e *Engbot) SayBye() {
 	fmt.Println("Bye")
+}
+
+//PrintError prints the error when command isn't recognized
+func (e *Engbot) PrintError() {
+	fmt.Println("I don't know such command")
 }

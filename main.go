@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"practice-1/bot"
 	"practice-1/list"
 	"practice-1/randomcube"
@@ -42,9 +43,11 @@ func main() {
 	fmt.Printf("The last element of the collection is %v\n", myCollection.Last().Value())
 
 	myBot, err := bot.CreateBot(bot.ScanLanguage())
-	 if err != nil {
-		 fmt.Println(err)
-	 }
 
-	 bot.HandleInput(myBot)
+	if err != nil {
+		 fmt.Println(err)
+		 os.Exit(1)
+	}
+
+	bot.HandleInput(myBot)
 }

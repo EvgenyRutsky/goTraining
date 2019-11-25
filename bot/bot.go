@@ -22,7 +22,7 @@ func ScanLanguage() string {
 	_, err := fmt.Scanln(&language)
 
 	if err != nil {
-		fmt.Printf("You've just ran into error %v\n", err)
+		fmt.Printf("You've just ran into error: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -54,47 +54,30 @@ func HandleInput(b Bot) {
 	_, err := fmt.Scanln(&input)
 
 	if err != nil {
-		fmt.Printf("You've just ran into error %v\n", err)
+		fmt.Printf("You've just ran into error: %v\n", err)
 		os.Exit(1)
 	}
 
-	//input = translateCommand(input)
-
-	switch input {
-	case "1":
-		b.SayHello()
-		HandleInput(b)
-	case "2":
-		b.SayTime()
-		HandleInput(b)
-	case "3":
-		b.SayDate()
-		HandleInput(b)
-	case "4":
-		b.SayWeekDay()
-		HandleInput(b)
-	case "5":
-		b.SayBye()
-
-	default:
-		b.PrintError()
-		HandleInput(b)
+	commandMap := map[string]func(){
+		"Привет" : b.SayHello,
+		"Время" : b.SayTime,
+		"Дата" : b.SayDate,
+		"День" : b.SayWeekDay,
+		"Пока" : b.SayBye,
+		"Hello" : b.SayHello,
+		"Time" : b.SayTime,
+		"Date" : b.SayDate,
+		"Day" : b.SayWeekDay,
+		"Bye" : b.SayBye,
 	}
+	i, ok := commandMap[input]
+
+	if ok {
+		i()
+	} else {
+		b.PrintError()
+	}
+	HandleInput(b)
 }
 
-//translateCommand translates language-specific command to numeric command
-//func translateCommand (input string) string {
-//	commandMap := map[string]func(){
-//		"Привет" : "1",
-//		"Время" : "2",
-//		"Дата" : "3",
-//		"День" : "4",
-//		"Пока" : "5",
-//		"Hello" : "1",
-//		"Time" : "2",
-//		"Date" : "3",
-//		"Day" : "4",
-//		"Bye" : "5",
-//	}
-//	return commandMap[input]
-//}
+

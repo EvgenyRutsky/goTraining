@@ -2,6 +2,7 @@ package bot
 
 import (
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -45,6 +46,7 @@ func (e *Engbot) SayWeekDay() {
 //SayBye says bye
 func (e *Engbot) SayBye() {
 	fmt.Println("Bye")
+	os.Exit(0)
 }
 
 //PrintError prints the error when command isn't recognized

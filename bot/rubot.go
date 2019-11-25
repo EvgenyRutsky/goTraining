@@ -2,6 +2,7 @@ package bot
 
 import (
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -45,6 +46,7 @@ func (r *Rubot) SayWeekDay() {
 //SayBye says bye
 func (r *Rubot) SayBye() {
 	fmt.Println("Пока")
+	os.Exit(0)
 }
 
 //PrintError prints the error when command isn't recognized

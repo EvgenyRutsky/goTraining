@@ -10,5 +10,5 @@ func main () {
 
 	currentW := meteo.WeatherForecast("Mahilyow")
 
-	fmt.Println(currentW.GetTemperature())
+	fmt.Println(currentW.GetHumidity())
 }

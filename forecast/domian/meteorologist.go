@@ -23,14 +23,14 @@ type Meteorologist struct {
 
 func (m Meteorologist) WeatherForecast (city string) Weather {
 
-	url := urlBuilder(city)
+	u := urlBuilder(city)
 
-	fmt.Println(url)
+	fmt.Println(u)
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(u)
 
 	if err != nil {
-		fmt.Printf("An error occurred while requesting to the url %v\n", url)
+		fmt.Printf("An error occurred while requesting to the url %v\n", u)
 	}
 
 	defer resp.Body.Close()
@@ -43,15 +43,15 @@ func (m Meteorologist) WeatherForecast (city string) Weather {
 		fmt.Println("An error occurred while reading response body")
 	}
 
-	weather := &Weather{}
+	weather := Weather{}
 
-	err = json.Unmarshal(body, weather)
+	err = json.Unmarshal(body, &weather)
 
 	if err != nil {
-		fmt.Println("An error occurred while parsing response")
+		fmt.Println("An error occurred while parsing response", err)
 	}
 	
-	return *weather
+	return weather
 }
 
 func urlBuilder (city string) string {

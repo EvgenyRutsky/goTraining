@@ -1,26 +1,29 @@
  package domian
 
-type temperature struct {
-	Temp float64 `json:"main.temp"`
-	TempMin float64 `json:"main.temp_min"`
-	TempMax float64 `json:"main.temp_max"`
-}
-
 type wind struct {
-	Speed int `json:"wind.speed"`
-	Gust int
-	Direction string `json:"wind.deg"`
+	Speed int `json:"speed"`
+	Direction string `json:"deg"`
 }
 
 type Weather struct {
-	Temperature temperature
-	Description string `json:"weather.description"`
-	Humidity int `json:"main.humidity"`
-	Wind wind
+	Description []w `json:"weather"`
+	Main Main `json:"main"`
+	Wind wind `json:"wind"`
+}
+
+type w struct {
+	desc string `json:"description"`
+}
+
+type Main struct {
+	Humidity int `json:"humidity"`
+	Temp float64 `json:"temp"`
+	TempMin float64 `json:"temp_min"`
+	TempMax float64 `json:"temp_max"`
 }
 
 func (w *Weather) GetTemperature() (float64, float64, float64) {
-	return w.Temperature.Temp, w.Temperature.TempMin, w.Temperature.TempMax
+	return w.Main.Temp, w.Main.TempMin, w.Main.TempMax
 }
 
 func (w *Weather) GetCloudiness() string {
@@ -28,9 +31,9 @@ func (w *Weather) GetCloudiness() string {
 }
 
 func (w *Weather) GetHumidity() int {
-	return w.Humidity
+	return w.Main.Humidity
 }
 
-func (w *Weather) GetWind() (int, int, string) {
-	return w.Wind.Speed, w.Wind.Gust, w.Wind.Direction
+func (w *Weather) GetWind() (int, string) {
+	return w.Wind.Speed,  w.Wind.Direction
 }

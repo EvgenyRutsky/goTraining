@@ -1,25 +1,34 @@
  package domian
 
-type wind struct {
-	Speed int `json:"speed"`
-	Direction string `json:"deg"`
-}
+ import "math"
 
-type Weather struct {
-	Description []w `json:"weather"`
+ type Weather struct {
+	WeatherDescription []WeatherDescription `json:"weather"`
 	Main Main `json:"main"`
-	Wind wind `json:"wind"`
+	Wind Wind `json:"wind"`
+	Sys Sys `json:"sys"`
+	Timezone int `json:"timezone"`
 }
 
-type w struct {
-	desc string `json:"description"`
+type WeatherDescription struct {
+	Description string `json:"description"`
 }
 
 type Main struct {
-	Humidity int `json:"humidity"`
 	Temp float64 `json:"temp"`
+	Humidity int `json:"humidity"`
 	TempMin float64 `json:"temp_min"`
 	TempMax float64 `json:"temp_max"`
+}
+
+type Wind struct {
+	Speed float64 `json:"speed"`
+	Direction int `json:"deg"`
+}
+
+type Sys struct {
+	Sunrise int `json:"sunrise"`
+	Sunset int `json:"sunset"`
 }
 
 func (w *Weather) GetTemperature() (float64, float64, float64) {
@@ -27,13 +36,36 @@ func (w *Weather) GetTemperature() (float64, float64, float64) {
 }
 
 func (w *Weather) GetCloudiness() string {
-	return w.Description
+
+	for _, v := range w.WeatherDescription {
+		return v.Description
+	}
+
+	return ""
 }
 
 func (w *Weather) GetHumidity() int {
 	return w.Main.Humidity
 }
 
-func (w *Weather) GetWind() (int, string) {
-	return w.Wind.Speed,  w.Wind.Direction
+func (w *Weather) GetWind() (float64, string) {
+	direction := directionToText(w.Wind.Direction)
+	return w.Wind.Speed, direction
+}
+
+func directionToText(deg int) string {
+	v := math.Floor((float64(deg)/45) + 0.5)
+	m := map[float64] string {
+		0 : "северный",
+		1 : "северо-восточный",
+		2 : "восточный",
+		3 : "юго-восточный",
+		4 : "южный",
+		5 : "юго-западный",
+		6 : "западный",
+		7 : "северо-западный",
+		8 : "северный",
+	}
+
+	return m[v]
 }

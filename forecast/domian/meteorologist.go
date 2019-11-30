@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 const (
@@ -25,8 +26,6 @@ func (m Meteorologist) WeatherForecast (city string) Weather {
 
 	u := urlBuilder(city)
 
-	fmt.Println(u)
-
 	resp, err := http.Get(u)
 
 	if err != nil {
@@ -35,23 +34,29 @@ func (m Meteorologist) WeatherForecast (city string) Weather {
 
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+
+		fmt.Printf("the service has responded with %v\n", resp.Status)
+		os.Exit(2)
+
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 
-	fmt.Println(string(body))
+		if err != nil {
+			fmt.Println("An error occurred while reading response body")
+		}
 
-	if err != nil {
-		fmt.Println("An error occurred while reading response body")
-	}
+		weather := Weather{}
 
-	weather := Weather{}
+		err = json.Unmarshal(body, &weather)
 
-	err = json.Unmarshal(body, &weather)
+		if err != nil {
+			fmt.Println("An error occurred while parsing response", err)
+		}
 
-	if err != nil {
-		fmt.Println("An error occurred while parsing response", err)
-	}
-	
-	return weather
+		return weather
+
 }
 
 func urlBuilder (city string) string {

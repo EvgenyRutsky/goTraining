@@ -1,15 +1,20 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"server/apiserver"
+	"server/apiserver/handlers"
+	"server/infrastructure"
 )
 
 func main() {
-	config := apiserver.NewConfig()
-	s := apiserver.New(config)
+	bookRepo := infrastructure.NewBookRepository()
+	readerRepo := infrastructure.NewReaderRepository()
 
-	if err := s.Start(); err != nil {
-		log.Fatal(err)
-	}
+	bookHandler := handlers.NewBookHandler(bookRepo)
+	readerHandler := handlers.NewReaderHandler(readerRepo)
+
+	server := apiserver.NewServer(":8080", bookHandler,readerHandler)
+	server.ConfigureAndRun()
+	fmt.Println("starting server and port 8080")
 }

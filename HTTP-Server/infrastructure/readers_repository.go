@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"server/domain"
-	"server/infrastructure/client"
+	"httpserver/domain"
+	"httpserver/infrastructure/client"
 	"time"
 )
 
@@ -19,27 +19,24 @@ type ReaderRepository interface {
 
 type readersRepository struct {
 	context context.Context
-	dbname string
-	clientURI string
-	readersCollection string
+	config *client.Config
 }
 
-func NewReaderRepository() ReaderRepository {
+func NewReaderRepository(config *client.Config) ReaderRepository {
 	return &readersRepository {
 		context: context.Background(),
-		dbname: "dev",
-		readersCollection:"readers",
+		config: config,
 	}
 }
 
 func (r *readersRepository) InsertReader(reader *domain.Reader) (int, error) {
 	ctx, cancel := context.WithTimeout(r.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(r.config).Open(ctx)
 	if err != nil {
 		return 0, err
 	}
-	collection := opencl.Database(r.dbname).Collection(r.readersCollection)
+	collection := opencl.Database(r.config.Dbname).Collection(r.config.ReadersCollection)
 	_, err = collection.InsertOne(ctx, reader)
 	if err != nil {
 		return 0, err
@@ -55,17 +52,17 @@ func (r *readersRepository) InsertReader(reader *domain.Reader) (int, error) {
 func (r *readersRepository) UpdateReader(reader *domain.Reader) (int, error) {
 	ctx, cancel := context.WithTimeout(r.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(r.config).Open(ctx)
 	if err != nil {
 		return 0, err
 	}
 
-	collection := opencl.Database(r.dbname).Collection(r.readersCollection)
+	collection := opencl.Database(r.config.Dbname).Collection(r.config.ReadersCollection)
 	filter := bson.D{{"id",reader.ID}}
 	update := bson.D{
 		{"$set",bson.D{
 			{"name", reader.Name},
-			{"book id", reader.BookID},
+			{"book_id", reader.BookID},
 		}},
 	}
 	result, err := collection.UpdateOne(ctx, filter, update)
@@ -82,12 +79,12 @@ func (r *readersRepository) UpdateReader(reader *domain.Reader) (int, error) {
 func (r *readersRepository) DeleteReader(id int) (int, error) {
 	ctx, cancel := context.WithTimeout(r.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(r.config).Open(ctx)
 	if err != nil {
 		return 0, err
 	}
 
-	collection := opencl.Database(r.dbname).Collection(r.readersCollection)
+	collection := opencl.Database(r.config.Dbname).Collection(r.config.ReadersCollection)
 	filter := bson.D{{"id",id}}
 
 	result, err := collection.DeleteOne(ctx, filter)
@@ -104,12 +101,12 @@ func (r *readersRepository) DeleteReader(id int) (int, error) {
 func (r *readersRepository) GetReaderByID(id int) (*domain.Reader, error) {
 	ctx, cancel := context.WithTimeout(r.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(r.config).Open(ctx)
 	if err != nil {
 		return nil, err
 	}
 	var reader domain.Reader
-	collection := opencl.Database(r.dbname).Collection(r.readersCollection)
+	collection := opencl.Database(r.config.Dbname).Collection(r.config.ReadersCollection)
 	filter := bson.D{{"id",id}}
 	err = collection.FindOne(ctx, filter).Decode(&reader)
 	if err != nil {
@@ -125,11 +122,11 @@ func (r *readersRepository) GetReaderByID(id int) (*domain.Reader, error) {
 func (r *readersRepository) GetReaders() ([]*domain.Reader, error) {
 	ctx, cancel := context.WithTimeout(r.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(r.config).Open(ctx)
 	if err != nil {
 		return nil, err
 	}
-	collection := opencl.Database(r.dbname).Collection(r.readersCollection)
+	collection := opencl.Database(r.config.Dbname).Collection(r.config.ReadersCollection)
 	cur, err := collection.Find(ctx, bson.M{}, options.Find())
 	if err != nil {
 		return nil, err

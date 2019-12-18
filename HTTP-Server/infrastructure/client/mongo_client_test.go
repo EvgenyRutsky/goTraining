@@ -6,6 +6,7 @@ import (
 )
 
 func TestNewClient_ShouldNotReturnNil(t *testing.T) {
-	c := NewClient()
+	config := NewConfig()
+	c := NewClient(config)
 	assert.NotNil(t, c)
 }

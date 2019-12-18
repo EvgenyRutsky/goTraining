@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"server/domain"
-	"server/infrastructure/client"
+	"httpserver/domain"
+	"httpserver/infrastructure/client"
 	"time"
 )
 
@@ -19,27 +19,24 @@ type BooksRepository interface {
 
 type booksRepository struct {
 	context context.Context
-	dbname string
-	clientURI string
-	booksCollection string
+	config *client.Config
 }
 
-func NewBookRepository() BooksRepository {
+func NewBookRepository(config *client.Config) BooksRepository {
 	return &booksRepository{
 		context: context.Background(),
-		dbname: "dev",
-		booksCollection:"books",
+		config: config,
 	}
 }
 
 func (br *booksRepository) InsertBook(book *domain.Book) (int, error) {
 	ctx, cancel := context.WithTimeout(br.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(br.config).Open(ctx)
 	if err != nil {
 		return 0, err
 	}
-	collection := opencl.Database(br.dbname).Collection(br.booksCollection)
+	collection := opencl.Database(br.config.Dbname).Collection(br.config.BooksCollection)
 	_, err = collection.InsertOne(ctx, book)
 	if err != nil {
 		return 0, err
@@ -55,12 +52,12 @@ func (br *booksRepository) InsertBook(book *domain.Book) (int, error) {
 func (br *booksRepository) UpdateBook(book *domain.Book) (int, error) {
 	ctx, cancel := context.WithTimeout(br.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(br.config).Open(ctx)
 	if err != nil {
 		return 0, err
 	}
 
-	collection := opencl.Database(br.dbname).Collection(br.booksCollection)
+	collection := opencl.Database(br.config.Dbname).Collection(br.config.BooksCollection)
 	filter := bson.D{{"id",book.ID}}
 	update := bson.D{
 		{"$set",bson.D{
@@ -82,12 +79,12 @@ func (br *booksRepository) UpdateBook(book *domain.Book) (int, error) {
 func (br *booksRepository) DeleteBook(id int) (int, error) {
 	ctx, cancel := context.WithTimeout(br.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(br.config).Open(ctx)
 	if err != nil {
 		return 0, err
 	}
 
-	collection := opencl.Database(br.dbname).Collection(br.booksCollection)
+	collection := opencl.Database(br.config.Dbname).Collection(br.config.BooksCollection)
 	filter := bson.D{{"id",id}}
 
 	result, err := collection.DeleteOne(ctx, filter)
@@ -104,12 +101,12 @@ func (br *booksRepository) DeleteBook(id int) (int, error) {
 func (br *booksRepository) GetBookByID(id int) (*domain.Book, error) {
 	ctx, cancel := context.WithTimeout(br.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(br.config).Open(ctx)
 	if err != nil {
 		return nil, err
 	}
 	var book domain.Book
-	collection := opencl.Database(br.dbname).Collection(br.booksCollection)
+	collection := opencl.Database(br.config.Dbname).Collection(br.config.BooksCollection)
 	filter := bson.D{{"id",id}}
 	err = collection.FindOne(ctx, filter).Decode(&book)
 	if err != nil {
@@ -125,11 +122,11 @@ func (br *booksRepository) GetBookByID(id int) (*domain.Book, error) {
 func (br *booksRepository) GetBooks() ([]*domain.Book, error) {
 	ctx, cancel := context.WithTimeout(br.context, 5*time.Second)
 	defer cancel()
-	opencl, err := client.NewClient().Open(ctx)
+	opencl, err := client.NewClient(br.config).Open(ctx)
 	if err != nil {
 		return nil, err
 	}
-	collection := opencl.Database(br.dbname).Collection(br.booksCollection)
+	collection := opencl.Database(br.config.Dbname).Collection(br.config.BooksCollection)
 	cur, err := collection.Find(ctx, bson.M{}, options.Find())
 	if err != nil {
 		return nil, err

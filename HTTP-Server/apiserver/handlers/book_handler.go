@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"httpserver/domain"
+	"httpserver/infrastructure"
 	"net/http"
-	"server/domain"
-	"server/infrastructure"
 	"strconv"
 )
 

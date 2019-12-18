@@ -13,17 +13,17 @@ type Client interface {
 type mongoClient struct {
 	clientURI string
 	dbname string
+	config *Config
 }
 
-func NewClient() Client {
+func NewClient(config *Config) Client {
 	return &mongoClient{
-		clientURI: "mongodb://127.0.0.1:27017",
-		dbname:    "dev",
+		config: config,
 	}
 }
 
 func (mc *mongoClient) Open(ctx context.Context) (*mongo.Client, error) {
-	mclient, err := mongo.NewClient(options.Client().ApplyURI(mc.clientURI))
+	mclient, err := mongo.NewClient(options.Client().ApplyURI(mc.config.ClientURI))
 	if  err != nil {
 		return nil, err
 	}

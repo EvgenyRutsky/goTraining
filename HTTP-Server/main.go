@@ -2,14 +2,16 @@ package main
 
 import (
 	"fmt"
-	"server/apiserver"
-	"server/apiserver/handlers"
-	"server/infrastructure"
+	"httpserver/apiserver"
+	"httpserver/apiserver/handlers"
+	"httpserver/infrastructure"
+	"httpserver/infrastructure/client"
 )
 
 func main() {
-	bookRepo := infrastructure.NewBookRepository()
-	readerRepo := infrastructure.NewReaderRepository()
+	cfg := client.NewConfig()
+	bookRepo := infrastructure.NewBookRepository(cfg)
+	readerRepo := infrastructure.NewReaderRepository(cfg)
 
 	bookHandler := handlers.NewBookHandler(bookRepo)
 	readerHandler := handlers.NewReaderHandler(readerRepo)

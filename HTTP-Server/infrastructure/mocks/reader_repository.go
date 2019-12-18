@@ -2,7 +2,7 @@
 
 package mocks
 
-import domain "server/domain"
+import domain "httpserver/domain"
 
 import mock "github.com/stretchr/testify/mock"
 

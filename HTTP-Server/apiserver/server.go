@@ -2,8 +2,8 @@ package apiserver
 
 import (
 	"fmt"
+	"httpserver/apiserver/handlers"
 	"net/http"
-	"server/apiserver/handlers"
 )
 
 type Server struct {
@@ -22,6 +22,7 @@ func NewServer (port string, bookHandler handlers.BookHandler, readerHandler han
 
 func (s *Server) ConfigureAndRun() {
 	fmt.Println("configuring new server")
+
 	bookMux := http.NewServeMux()
 	bookMux.HandleFunc("/books/addbook", s.bookHandler.AddBook)
 	bookMux.HandleFunc("/books/updatebook", s.bookHandler.UpdateBook)
